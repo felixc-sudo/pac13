@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CARBONCUT | Carbon Reduction Kanban Task Manager & Footprint Hub</title>
+  <link rel="stylesheet" href="carboncut_kanban_board.css" />
+</head>
+<body>
+
+  <div class="cc-app-shell">
+    <!-- Left Dark Navy Sidebar (Matching Practicum Kanban Task Manager UI) -->
+    <aside class="cc-sidebar" aria-label="Workspace Navigation">
+      <div class="cc-brand-box">
+        <div class="cc-shield-badge">CC</div>
+        <span class="cc-brand-title">CARBONCUT</span>
+        <span class="cc-brand-sub">Net-Zero Task Manager</span>
+      </div>
+
+      <nav class="cc-side-nav">
+        <a href="#kanban-workspace" class="cc-nav-item active" onclick="filterByStatus('all', this)">
+          &#9783; Board (By Status)
+        </a>
+        <a href="#footprint-summary" class="cc-nav-item">
+          &#9776; Emissions Calculator
+        </a>
+        <a href="#kanban-workspace" class="cc-nav-item" onclick="filterByStatus('pending', this)">
+          &#9203; 1. Pending Offsets
+        </a>
+        <a href="#kanban-workspace" class="cc-nav-item" onclick="filterByStatus('progress', this)">
+          &#9881; 2. In Progress Audits
+        </a>
+        <a href="#kanban-workspace" class="cc-nav-item" onclick="filterByStatus('completed', this)">
+          &#10004; 3. Completed Milestones
+        </a>
+        <a href="#theory-section" class="cc-nav-item">
+          &#128214; Task Manager Theory
+        </a>
+      </nav>
+
+      <div class="cc-side-footer">
+        <small>Scope 1–3 Decarbonization</small>
+        <strong id="sidebarProgressText">0% Net-Zero Progress</strong>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <div class="cc-main-area">
+      <!-- Top Search, Add Task & Export Toolbar -->
+      <header class="cc-topbar">
+        <div class="cc-search-wrap">
+          <input
+            type="search"
+            id="taskSearchInput"
+            placeholder="Search carbon tasks (e.g., Solar, Scope 2, Fleet)..."
+            oninput="renderBoard()"
+            aria-label="Search carbon reduction tasks"
+          />
+        </div>
+
+        <div class="cc-toolbar-actions">
+          <select id="categoryFilter" onchange="renderBoard()" aria-label="Filter by service category">
+            <option value="ALL">Filter: All Scopes</option>
+            <option value="Energy">Scope 2: Energy</option>
+            <option value="Fleet">Scope 1: Fleet</option>
+            <option value="Offsets">Verified Offsets</option>
+            <option value="Supply Chain">Scope 3: Supply</option>
+          </select>
+          <button type="button" class="cc-tool-btn" onclick="exportTasksJson()">Export JSON</button>
+          <button type="button" class="cc-tool-btn" onclick="resetSampleBoard()">Reset Demo</button>
+        </div>
+      </header>
+
+      <!-- Quick Create Task Bar (Input box + Add button onclick) -->
+      <section class="cc-quick-add-bar" aria-label="Create New Carbon Reduction Task">
+        <input
+          type="text"
+          id="newTaskTitleInput"
+          placeholder="Enter a new carbon reduction task (e.g., Install rooftop solar panels at Plant B)..."
+        />
+        <select id="newTaskCategory">
+          <option value="Energy">Energy</option>
+          <option value="Fleet">Fleet</option>
+          <option value="Offsets">Offsets</option>
+          <option value="Supply Chain">Supply Chain</option>
+        </select>
+        <select id="newTaskStatus">
+          <option value="pending">Pending</option>
+          <option value="progress">In Progress</option>
+          <option value="completed">Completed</option>
+        </select>
+        <button type="button" class="cc-btn-primary" onclick="addTask()">+ Add Task</button>
+      </section>
+
+      <!-- 3-Column Kanban Board: Pending | In Progress | Completed (Matching Diagram) -->
+      <main id="kanban-workspace" class="cc-board-columns">
+        <!-- Column 1: Pending -->
+        <section class="cc-column" data-col="pending">
+          <div class="cc-col-header">
+            <h3>Pending <span class="cc-count-pill" id="count-pending">0</span></h3>
+          </div>
+          <div class="cc-card-stack" id="list-pending"></div>
+          <button type="button" class="cc-add-card-footer" onclick="quickAddToColumn('pending')">
+            + Add New Card
+          </button>
+        </section>
+
+        <!-- Column 2: In Progress -->
+        <section class="cc-column" data-col="progress">
+          <div class="cc-col-header">
+            <h3>In Progress <span class="cc-count-pill" id="count-progress">0</span></h3>
+          </div>
+          <div class="cc-card-stack" id="list-progress"></div>
+          <button type="button" class="cc-add-card-footer" onclick="quickAddToColumn('progress')">
+            + Add New Card
+          </button>
+        </section>
+
+        <!-- Column 3: Completed -->
+        <section class="cc-column" data-col="completed">
+          <div class="cc-col-header">
+            <h3>Completed <span class="cc-count-pill" id="count-completed">0</span></h3>
+          </div>
+          <div class="cc-card-stack" id="list-completed"></div>
+          <button type="button" class="cc-add-card-footer" onclick="quickAddToColumn('completed')">
+            + Add New Card
+          </button>
+        </section>
+      </main>
+
+      <!-- Carbon Footprint Calculator Section -->
+      <section id="footprint-summary" class="cc-lower-panel">
+        <div class="cc-panel-head">
+          <h2>Carbon Footprint Tracking Calculator</h2>
+          <p>Calculate monthly &amp; annual CO₂e emissions and push a reduction card directly onto the Kanban board.</p>
+        </div>
+
+        <div class="cc-calc-grid">
+          <div>
+            <div class="cc-range-group">
+              <label for="elecKwh">Monthly Electricity: <strong id="elecKwhVal">310</strong> kWh</label>
+              <input type="range" id="elecKwh" min="50" max="1500" value="310" oninput="calculateCarbon()" />
+            </div>
+            <div class="cc-range-group">
+              <label for="fleetKm">Weekly Fleet / Commute: <strong id="fleetKmVal">130</strong> km</label>
+              <input type="range" id="fleetKm" min="0" max="1000" value="130" oninput="calculateCarbon()" />
+            </div>
+            <div class="cc-range-group">
+              <label for="opsType">Operations &amp; Supply Intensity</label>
+              <select id="opsType" onchange="calculateCarbon()">
+                <option value="115">Low-Carbon / Renewable (115 kg CO₂e/mo)</option>
+                <option value="170" selected>Balanced Commercial (170 kg CO₂e/mo)</option>
+                <option value="250">Standard Manufacturing (250 kg CO₂e/mo)</option>
+                <option value="340">Cold-Chain Logistics (340 kg CO₂e/mo)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="cc-calc-summary">
+            <span class="cc-kicker">ESTIMATED CARBON FOOTPRINT</span>
+            <div class="cc-big-co2"><span id="monthlyCo2Out">508</span> <small>kg CO₂e / month</small></div>
+            <p>Annualized Output: <strong id="annualCo2Out">6.10</strong> tonnes CO₂e / year</p>
+            <button type="button" class="cc-btn-primary cc-full-btn" onclick="createOffsetCard()">
+              + Create Pending Offset Card on Board
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Minimum Underpinning Theory -->
+      <section id="theory-section" class="cc-lower-panel">
+        <div class="cc-panel-head">
+          <h2>Minimum Underpinning Theory: JavaScript Task Manager</h2>
+          <p>Event-driven DOM manipulation, state management, and client-side persistence.</p>
+        </div>
+        <p class="cc-theory-text">
+          Developing a task manager using JavaScript revolves around <strong>event-driven programming</strong>,
+          <strong>DOM manipulation</strong>, and structured <strong>state management</strong>. User actions such as
+          adding, editing, moving across status columns (<em>Pending</em>, <em>In Progress</em>, <em>Completed</em>),
+          or deleting carbon reduction cards trigger JavaScript functions that synchronize the underlying task array
+          and re-render the responsive UI in real time without page reloads.
+        </p>
+      </section>
+
+      <footer class="cc-footer">
+        <span><strong>CARBONCUT</strong> &mdash; Carbon Footprint Tracking &amp; Reduction Services</span>
+        <span>&copy; 2026 CARBONCUT &bull; GitHub &amp; Vercel Ready</span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="carboncut_kanban_state.js"></script>
+</body>
+</html>

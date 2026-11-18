@@ -1,0 +1,468 @@
+/* CARBONCUT Stylesheet — Sidebar + 3-Column Kanban Task Manager & Carbon Calculator */
+:root {
+  --sidebar-bg: #1e3557;
+  --sidebar-hover: #294670;
+  --page-bg: #eef2f7;
+  --surface: #ffffff;
+  --ink: #1b2838;
+  --muted: #5b6b7f;
+  --primary: #0d9488;
+  --primary-dark: #0f766e;
+  --border: #d8e1ec;
+
+  /* Pastel Card Colors matching Practicum Diagram */
+  --card-green-bg: #e6f9ed;
+  --card-green-tag: #bbf7d0;
+  --card-green-ink: #166534;
+
+  --card-pink-bg: #ffe8ea;
+  --card-pink-tag: #fecdd3;
+  --card-pink-ink: #9f1239;
+
+  --card-blue-bg: #e0f4ff;
+  --card-blue-tag: #bae6fd;
+  --card-blue-ink: #075985;
+
+  --card-amber-bg: #ffedd5;
+  --card-amber-tag: #fed7aa;
+  --card-amber-ink: #9a3412;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--page-bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.cc-app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Left Sidebar */
+.cc-sidebar {
+  width: 245px;
+  background: var(--sidebar-bg);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 16px;
+  flex-shrink: 0;
+}
+
+.cc-brand-box {
+  text-align: center;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.cc-shield-badge {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 8px;
+  border-radius: 50%;
+  background: #0d9488;
+  color: #ffffff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.05em;
+}
+
+.cc-brand-title {
+  display: block;
+  font-weight: 800;
+  font-size: 1.12rem;
+  letter-spacing: 0.06em;
+}
+
+.cc-brand-sub {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+.cc-side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 20px 0 auto;
+}
+
+.cc-nav-item {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-size: 0.88rem;
+  padding: 9px 12px;
+  border-radius: 6px;
+  transition: background 0.18s ease;
+}
+
+.cc-nav-item:hover,
+.cc-nav-item.active {
+  background: var(--sidebar-hover);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.cc-side-footer {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.cc-side-footer small {
+  display: block;
+  color: #94a3b8;
+}
+
+/* Main Area */
+.cc-main-area {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-x: hidden;
+}
+
+/* Top Toolbar */
+.cc-topbar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cc-search-wrap input {
+  width: 280px;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.cc-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cc-toolbar-actions select,
+.cc-tool-btn {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.cc-tool-btn:hover {
+  background: #f1f5f9;
+}
+
+/* Quick Add Task Bar */
+.cc-quick-add-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cc-quick-add-bar input {
+  flex: 1;
+  min-width: 220px;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+
+.cc-quick-add-bar select {
+  padding: 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 0.88rem;
+}
+
+.cc-btn-primary {
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.cc-btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.cc-full-btn {
+  width: 100%;
+  margin-top: 12px;
+}
+
+/* 3-Column Kanban Board */
+.cc-board-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.cc-column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.cc-col-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cc-col-header h3 {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cc-count-pill {
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.cc-card-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 70px;
+}
+
+/* Pastel Task Cards matching Practicum Diagram */
+.cc-task-card {
+  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.cc-task-card.theme-green { background: var(--card-green-bg); }
+.cc-task-card.theme-pink  { background: var(--card-pink-bg); }
+.cc-task-card.theme-blue  { background: var(--card-blue-bg); }
+.cc-task-card.theme-amber { background: var(--card-amber-bg); }
+
+.cc-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cc-card-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #1e293b;
+}
+
+.cc-card-date {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.cc-card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cc-cat-tag {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 4px;
+}
+
+.theme-green .cc-cat-tag { background: var(--card-green-tag); color: var(--card-green-ink); }
+.theme-pink .cc-cat-tag  { background: var(--card-pink-tag);  color: var(--card-pink-ink); }
+.theme-blue .cc-cat-tag  { background: var(--card-blue-tag);  color: var(--card-blue-ink); }
+.theme-amber .cc-cat-tag { background: var(--card-amber-tag); color: var(--card-amber-ink); }
+
+.cc-card-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.cc-tiny-btn {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.cc-tiny-btn:hover {
+  background: #ffffff;
+}
+
+.cc-tiny-btn.del {
+  color: #dc2626;
+}
+
+.cc-add-card-footer {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cc-add-card-footer:hover {
+  background: #f1f5f9;
+  color: var(--ink);
+}
+
+/* Lower Panels (Calculator & Theory) */
+.cc-lower-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px;
+}
+
+.cc-panel-head {
+  margin-bottom: 16px;
+}
+
+.cc-panel-head h2 {
+  font-size: 1.3rem;
+}
+
+.cc-panel-head p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.cc-calc-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 22px;
+}
+
+.cc-range-group {
+  margin-bottom: 14px;
+}
+
+.cc-range-group label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.cc-range-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.cc-range-group select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.cc-calc-summary {
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: 8px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cc-kicker {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+}
+
+.cc-big-co2 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  margin: 4px 0;
+}
+
+.cc-big-co2 small {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.cc-theory-text {
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.cc-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.84rem;
+  color: var(--muted);
+  padding: 6px 4px;
+}
+
+@media (max-width: 960px) {
+  .cc-app-shell {
+    flex-direction: column;
+  }
+  .cc-sidebar {
+    width: 100%;
+  }
+  .cc-board-columns,
+  .cc-calc-grid {
+    grid-template-columns: 1fr;
+  }
+}
